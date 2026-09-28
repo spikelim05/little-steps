@@ -11,9 +11,15 @@ export function scopedStorage(storage,userId){
  if(!userId)throw Error('A signed-in student is required.');
  return {getItem:key=>storage.getItem(`${key}:${userId}`),setItem:(key,value)=>storage.setItem(`${key}:${userId}`,value)};
 }
+// Internal authentication identifier only; students never need an email address.
+export function usernameEmail(username){
+ const name=String(username??'').trim().toLowerCase();
+ if(!/^[a-z0-9_]{3,32}$/.test(name))throw Error('Enter your username using 3–32 letters, numbers or underscores.');
+ return name+'@students.little-steps.invalid';
+}
 export class StudentAuth {
  constructor(client){this.client=client;}
- async signIn(email,password){const {error}=await this.client.auth.signInWithPassword({email:email.trim(),password});if(error)throw Error('Unable to sign in. Check your email and password, or ask your tutor for help.');return this.loadSpace();}
+ async signIn(username,password){const {error}=await this.client.auth.signInWithPassword({email:usernameEmail(username),password});if(error)throw Error('Unable to sign in. Check your username and password, or ask your tutor for help.');return this.loadSpace();}
  async loadSpace(){
   const {data,error}=await this.client.auth.getUser();
   if(error||!data?.user)throw Error('Please sign in to open your learning space.');
@@ -25,7 +31,7 @@ export class StudentAuth {
  }
  async signOut(){const {error}=await this.client.auth.signOut({scope:'local'});if(error)throw Error('Sign-out could not finish. Please reconnect and try again.');}
  async changePassword(currentPassword,password){
-  if(password.length<12||password.length>128)throw Error('Use a password of 12–128 characters.');
+  if(password.length<8||password.length>128)throw Error('Use a password of 8–128 characters.');
   const {error}=await this.client.auth.updateUser({password,current_password:currentPassword});
   if(error)throw Error('Password could not be changed. Check your current password and try again.');
  }

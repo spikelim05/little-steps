@@ -32,12 +32,18 @@ This creates `student_spaces`, enables Row Level Security, grants authenticated 
 
 ## 3. Create the two accounts
 
-In **Authentication > Users**, use **Add user / Create new user** to create each student manually with a different email and password. Use the direct create-user option, not an email invitation, and confirm the user when prompted.
+Students sign in with a **username and password**. Supabase uses an internal email-shaped identifier behind the scenes; the student does not need an email account.
 
-- Student 1: their assigned login email and a unique password.
-- Student 2: a different assigned login email and a unique password.
+In **Authentication > Users**, use **Add user / Create new user** with these exact internal identifiers:
 
-Use at least 12 characters for each password. A tutor-controlled real email alias can be used if the child does not have their own email. Give the student only their own credentials. Do not send passwords through chat or commit them to GitHub.
+| Student | Website username | Supabase email field | Content assignment |
+| --- | --- | --- | --- |
+| Student 1 | `laurenp4` | `laurenp4@students.little-steps.invalid` | `supabase/student-1.sql` |
+| Student 2 | `calebp4` | `calebp4@students.little-steps.invalid` | `supabase/student-2.sql` |
+
+Enter the tutor-selected password directly in Supabase, and enable **Auto Confirm User**. These identifiers cannot receive emails, so do not use invitations or email reset links. Passwords are intentionally absent from this repository. Set the project's minimum password length to 8 characters to support the chosen passwords; additional provider password rules must also allow them. The app accepts usernames without regard to case and trims surrounding spaces; passwords are unchanged.
+
+If accounts already exist under other email addresses, update their email identifiers using Supabase's administrative tools while retaining their User UIDs and confirming the new identifiers. This preserves their content assignments and device progress. Do not create duplicate replacement accounts.
 
 In Authentication settings, disable public sign-ups. Keep email/password sign-in enabled. Creating an authentication user alone does not grant content access; the assignment in the next step is required.
 
