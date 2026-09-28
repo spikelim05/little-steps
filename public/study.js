@@ -1,3 +1,5 @@
+import {mountTutor} from './tutor.js';
+let disposeTutor=null;
 import {themes} from './themes.js';
 import {authConfig} from './config.js';
 import {StudentAuth,validConfig,scopedStorage,readContent} from './auth.js';
@@ -126,11 +128,14 @@ window.addEventListener('hashchange',()=>{if(!profile)return;const id=location.h
 document.addEventListener('keydown',e=>{if(page!=='flashcards'||$('#settings').open||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;if(e.key===' '&&['BUTTON','A'].includes(document.activeElement?.tagName))return;if(['ArrowLeft','ArrowRight',' '].includes(e.key)){e.preventDefault();action(e.key===' '?'flip':e.key==='ArrowLeft'?'previous-card':'next-card');}});
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&profile){try{await auth.loadSpace();tick();refreshChallenge();}catch(e){clearWorkspace(e.message);}}});
 function clearWorkspace(message=''){
+ if(disposeTutor){disposeTutor();disposeTutor=null;}
  cardMode='daily';deckDay='';challenge=null;challengeRows=null;challengeMessage='';challengeBusy=false;timerBusy=false;focusFinishing=false;profile=null;learning=null;cards=[];revisionResources=[];topics=[];deck=[];progress=freshProgress();settingsTrigger=null;cardIndex=0;revealed=false;page='home';subject='all';search='';onlySaved=false;cardSubject='all';reviewOnly=false;
  document.documentElement.dataset.theme='forest';
  showLogin({configured:!!auth,onSignIn:async(username,password)=>{const space=await auth.signIn(username,password);enterWorkspace(space);},message});
 }
 function enterWorkspace(space){
+ if(disposeTutor){disposeTutor();disposeTutor=null;}
+ if(space.role==='tutor'){profile=null;challenge=null;disposeTutor=mountTutor({root:$('#app'),auth,userId:space.user.id,onSignOut:()=>clearWorkspace()});return;}
  learning=readContent(space);profile=space;challenge=auth?new Challenge(auth.client,space.user.id):null;challengeRows=null;challengeMessage='';cards=learning.cards;revisionResources=learning.resources;topics=learning.topics;
  storage=scopedStorage(deviceStorage,space.user.id);progress=loadProgress(storage);storageWorks=saveProgress(storage,progress);
  rebuildDeck();const id=location.hash.slice(1);page=nav.some(n=>n[0]===id)?id:'home';render();tick();if(challenge){refreshChallenge();if(progress.timer?.challengePending)finishFocus();}

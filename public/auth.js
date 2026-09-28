@@ -26,6 +26,7 @@ export class StudentAuth {
   const user=data.user;
   const result=await this.client.from('student_spaces').select('user_id,display_name,content').eq('user_id',user.id).maybeSingle();
   if(result.error)throw Error('Your learning space could not be loaded. Please try again or ask your tutor to check the setup.');
+  if(!result.data&&this.client.rpc){const tutor=await this.client.rpc('tutor_dashboard');if(!tutor.error&&tutor.data)return {user,role:'tutor'};}
   if(!result.data||result.data.user_id!==user.id)throw Error('Your tutor has not assigned a learning space to this account yet.');
   const names={'laurenp4@students.little-steps.invalid':'Lauren','calebp4@students.little-steps.invalid':'Caleb'};
   return {user,...result.data,display_name:names[user.email?.toLowerCase()]||result.data.display_name};

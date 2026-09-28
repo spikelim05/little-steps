@@ -39,3 +39,5 @@
 :root[data-theme=cat] .hero{background:radial-gradient(circle at top right,#f8dfb9 0,transparent 60%),var(--soft)}
 :root[data-theme=wizard] .hero{background:radial-gradient(ellipse at top right,#554068 0,transparent 60%),var(--soft)}
 :root[data-theme=arcade] button:hover:not(:disabled),:root[data-theme=wizard] button:hover:not(:disabled){filter:brightness(1.12)}
+
+.tutor-shell{max-width:1150px;margin:auto;padding:24px}.tutor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.tutor-card{padding:24px}.tutor-card progress{width:100%;height:22px;accent-color:var(--accent)}.tutor-card dt{margin-top:18px}.tutor-card dd{margin:5px 0;font-weight:700}.tutor-card table{width:100%;text-align:left;margin-top:16px;border-spacing:0 10px}.tutor-card details{margin-top:24px}@media(max-width:700px){.tutor-grid{grid-template-columns:1fr}.tutor-shell{padding:14px}}
