@@ -22,7 +22,7 @@ Open http://localhost:3030. Node.js 22+ is required only for this local preview 
 - Learning path: their topics, exam formats and confidence ratings.
 - Weekly challenge: Lauren and Caleb share weekly progress bars for revision and focus sessions; enable with [WEEKLY_CHALLENGE_SETUP.md](WEEKLY_CHALLENGE_SETUP.md).
 - My files: account-private PDFs and photos, available across devices, up to 5 MB each.
-- Forest, Ocean, Sunset and Space themes, bookmarks and daily goals.
+- 10 themes: Forest, Ocean, Sunset, Space, Candyland, Dino Adventure, Arcade, Cloud Kingdom, Cat Café and Wizard Academy; plus bookmarks and daily goals.
 
 Both students' Maths and Science content is prepared separately. Student 2 follows St. Stephen's School Primary 4 assessment plans for 2026, including 14 Maths chapters, 7 named P4 Science chapters and the term assessment schedule. P3 revision groups follow the MOE 2023 syllabus, with the school’s listed Inspiring Science P3 textbook confirmed; a separate school P3 assessment plan was not found. Account creation and hosted assignment still require the setup steps.
 

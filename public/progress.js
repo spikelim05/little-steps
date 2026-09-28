@@ -1,8 +1,9 @@
+import {themes} from './themes.js';
 export const STORAGE_KEY='little-steps-static-v1';
 export function freshProgress(){return {version:1,remember:true,theme:'forest',completed:[],favourites:[],confidence:{},known:[],daily:{},focusSessions:0,notes:'',timer:null};}
 export function loadProgress(storage){
  const base=freshProgress();try{const raw=JSON.parse(storage.getItem(STORAGE_KEY)||'null');if(!raw||raw.version!==1)return base;
- base.remember=raw.remember!==false;base.theme=['forest','ocean','sunset','space'].includes(raw.theme)?raw.theme:'forest';if(!base.remember)return base;
+ base.remember=raw.remember!==false;base.theme=themes.some(theme=>theme.id===raw.theme)?raw.theme:'forest';if(!base.remember)return base;
  for(const key of ['completed','favourites','known'])if(Array.isArray(raw[key]))base[key]=[...new Set(raw[key].filter(x=>typeof x==='string').slice(0,200))];
  if(raw.confidence&&typeof raw.confidence==='object')for(const [k,v] of Object.entries(raw.confidence))if(['learning','practising','confident'].includes(v))base.confidence[k]=v;
  if(raw.daily&&typeof raw.daily==='object')for(const [k,v]of Object.entries(raw.daily).slice(-90))if(/^\d{4}-\d{2}-\d{2}$/.test(k)&&v&&typeof v==='object')base.daily[k]={cards:Array.isArray(v.cards)?v.cards.filter(x=>typeof x==='string').slice(0,200):[],practice:v.practice===true,focus:v.focus===true};

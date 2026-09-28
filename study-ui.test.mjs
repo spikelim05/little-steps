@@ -19,7 +19,7 @@ function fixture(){
  const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},filesView,dailyCards,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
  vm.runInContext(code,context);vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'one'},display_name:'Lauren',content:seed})})`,context);return {context,nodes,get};
 }
-test('assigned study pages render in all four themes with uploads only in My files',()=>{
+test('assigned study pages render in all available themes with uploads only in My files',()=>{
  const {context,get}=fixture();
  for(const theme of themes)for(const page of ['home','revision','flashcards','focus','syllabus','files']){
   vm.runInContext(`progress.theme=${JSON.stringify(theme.id)};page=${JSON.stringify(page)};render()`,context);

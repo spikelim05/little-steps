@@ -18,3 +18,24 @@
 .challenge-panel{padding:clamp(18px,3vw,28px);margin-bottom:28px}.challenge-panel .section-title{gap:12px;flex-wrap:wrap}.challenge-row{padding:14px 0}.challenge-label{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.challenge-row progress{display:block;width:100%;height:16px;margin:10px 0;appearance:none;border:0;border-radius:30px;overflow:hidden;background:var(--line,#d8e0dc)}.challenge-row progress::-webkit-progress-bar{background:var(--line,#d8e0dc);border-radius:30px}.challenge-row progress::-webkit-progress-value{background:var(--accent,#457b62);border-radius:30px}.challenge-row progress::-moz-progress-bar{background:var(--accent,#457b62);border-radius:30px}.challenge-row.is-you strong{color:var(--accent,#457b62)}.challenge-panel details{margin-top:16px}.challenge-panel summary{cursor:pointer}.revision-points{align-self:flex-start;margin-top:14px}.challenge-panel #challenge-status{overflow-wrap:anywhere}
 
 .daily-card-modes{margin-bottom:18px;flex-wrap:wrap}
+
+/* Playful themes: matching surfaces, readable text, and decorative previews. */
+:root[data-theme=candy],.theme-preview.candy{color-scheme:light;--bg:#fff5fa;--sidebar:#fce5f1;--surface:#fffafd;--text:#59283f;--muted:#86536c;--faint:#8a5d73;--line:#ebcbdc;--accent:#9c356b;--on-accent:#ffffff;--soft:#fbe2f0;--soft2:#f3c8e2;--peach:#fff0d4;--purple:#e8e2ff;--tip:#fff0f7;--art-book:#be76a0;--art-back:#d7b3ef;--ring:#e6b5d0;--shadow:0 12px 35px #44224410}
+.theme-preview.candy{background:var(--soft);color:var(--accent)}
+:root[data-theme=dino],.theme-preview.dino{color-scheme:light;--bg:#f8faee;--sidebar:#e9efd7;--surface:#fffff7;--text:#33452c;--muted:#61704d;--faint:#657451;--line:#d6dfbd;--accent:#436b2b;--on-accent:#ffffff;--soft:#e9efd3;--soft2:#d7e7b8;--peach:#f7e5c5;--purple:#e4eedf;--tip:#f5efd4;--art-book:#779348;--art-back:#d5b26b;--ring:#cad8a8;--shadow:0 12px 35px #44224410}
+.theme-preview.dino{background:var(--soft);color:var(--accent)}
+:root[data-theme=arcade],.theme-preview.arcade{color-scheme:dark;--bg:#11182a;--sidebar:#172038;--surface:#1d2942;--text:#f1f5ff;--muted:#b1bfdc;--faint:#a1b3d2;--line:#354762;--accent:#64ebc5;--on-accent:#102b25;--soft:#22394c;--soft2:#274a51;--peach:#3a3047;--purple:#2b3155;--tip:#243a47;--art-book:#627cca;--art-back:#da88cc;--ring:#3f637b;--shadow:0 12px 35px #00000030}
+.theme-preview.arcade{background:var(--soft);color:var(--accent)}
+:root[data-theme=cloud],.theme-preview.cloud{color-scheme:light;--bg:#f6f8ff;--sidebar:#eaf0ff;--surface:#ffffff;--text:#344566;--muted:#657394;--faint:#6c7795;--line:#d8e0f3;--accent:#5366a4;--on-accent:#ffffff;--soft:#edf0ff;--soft2:#dce4fb;--peach:#fff0dd;--purple:#f3e6f7;--tip:#edf4ff;--art-book:#8c9bd1;--art-back:#c9b6e2;--ring:#d4ddf5;--shadow:0 12px 35px #44224410}
+.theme-preview.cloud{background:var(--soft);color:var(--accent)}
+:root[data-theme=cat],.theme-preview.cat{color-scheme:light;--bg:#fff8ee;--sidebar:#f4e8d9;--surface:#fffdf8;--text:#553f32;--muted:#82674f;--faint:#876d58;--line:#e6d7c4;--accent:#895237;--on-accent:#ffffff;--soft:#f4e8d7;--soft2:#ebd8bf;--peach:#f7e6c3;--purple:#eee3d9;--tip:#faf0de;--art-book:#b88660;--art-back:#dfba80;--ring:#e2cfb5;--shadow:0 12px 35px #44224410}
+.theme-preview.cat{background:var(--soft);color:var(--accent)}
+:root[data-theme=wizard],.theme-preview.wizard{color-scheme:dark;--bg:#20172f;--sidebar:#291d3d;--surface:#332548;--text:#fcf3ff;--muted:#c6b3d7;--faint:#b9a5ce;--line:#514064;--accent:#e8c575;--on-accent:#32220e;--soft:#40304f;--soft2:#51405f;--peach:#514133;--purple:#38364f;--tip:#42324d;--art-book:#9973b6;--art-back:#c7a968;--ring:#6d537e;--shadow:0 12px 35px #00000030}
+.theme-preview.wizard{background:var(--soft);color:var(--accent)}
+:root[data-theme=candy] .hero{background:radial-gradient(circle at 90% 15%,#f6c7e0 0,transparent 40%),var(--soft)}
+:root[data-theme=dino] .hero{background:radial-gradient(ellipse at bottom right,#c6d9a3 0,transparent 60%),var(--soft)}
+:root[data-theme=arcade] .hero{background:linear-gradient(135deg,#24314c,#173c43)}
+:root[data-theme=cloud] .hero{background:radial-gradient(ellipse at top right,#ffffff 0,transparent 60%),var(--soft)}
+:root[data-theme=cat] .hero{background:radial-gradient(circle at top right,#f8dfb9 0,transparent 60%),var(--soft)}
+:root[data-theme=wizard] .hero{background:radial-gradient(ellipse at top right,#554068 0,transparent 60%),var(--soft)}
+:root[data-theme=arcade] button:hover:not(:disabled),:root[data-theme=wizard] button:hover:not(:disabled){filter:brightness(1.12)}
