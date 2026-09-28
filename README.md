@@ -1,1 +1,45 @@
-# little-steps
+﻿# Little Steps - personal student revision spaces
+
+A static website with genuine email/password sign-in provided by Supabase. Each student receives only the learning content assigned to their verified account. Render can continue to host the frontend as a Static Site; no upload service or permanent server disk is needed.
+
+## Required setup
+
+Read [SUPABASE_SETUP.md](SUPABASE_SETUP.md). Connect a Supabase project, run the RLS schema, create the student accounts, and assign their content. `public/config.js` is deliberately empty until you supply the project's public settings. Without them the login page stays locked; no fake login bypass exists.
+
+## Local preview
+
+```sh
+node server.mjs
+```
+
+Open http://localhost:3030. Node.js 22+ is required only for this local preview and tests. No package installation is needed. Sign-in requires the configured Supabase project and internet access.
+
+## Learning tools
+
+- Revision room: external online practice selected for the student's syllabus.
+- Flip & learn: original recall flashcards assigned to that student.
+- Focus corner: their study guidance, timer and scratchpad.
+- Learning path: their topics, exam formats and confidence ratings.
+- Forest, Ocean, Sunset and Space themes, bookmarks and daily goals.
+
+Both students' Maths and Science content is prepared separately. Student 2 follows St. Stephen's School Primary 4 assessment plans for 2026, including 14 Maths chapters, 7 named P4 Science chapters and the term assessment schedule. P3 revision groups follow the MOE 2023 syllabus, with the school’s listed Inspiring Science P3 textbook confirmed; a separate school P3 assessment plan was not found. Account creation and hosted assignment still require the setup steps.
+
+## Data and privacy
+
+Passwords are managed by Supabase Auth, not embedded in JavaScript. Supabase stores a small content record for each account. Row Level Security permits only the matching authenticated UID to read its record; students cannot edit assignments or choose another student's UID to gain access. Public sign-ups should be disabled.
+
+LocalStorage keeps optional progress, themes, timer state and notes separately by account on the device. These do not sync to the tutor or other devices and are not encrypted against the device owner. The sign-in session uses sessionStorage. Students can change passwords under settings; there is no self-service forgotten-password email flow in this app.
+
+There are no uploads. The old `data/` directory is preserved locally and is neither read nor served. Only `public/` should be published. Do not publish `private-content/`, `supabase/` or old student data. Remove obsolete curriculum/question files from earlier static deployments; see the setup guide.
+
+## Content editing
+
+`private-content/` contains the original source material. Run `node scripts/generate-student-content.mjs` to generate assignment SQL templates outside the public website. Run the resulting SQL in Supabase with the appropriate user ID. The frontend has no tutor/admin mode; account creation and content assignment are handled in Supabase by the tutor.
+
+## Checks
+
+```sh
+node --test
+```
+
+Tests cover the mocked authentication adapter, denied mismatched assignments, account-local progress separation, protected content excluded from public serving, SQL policy declarations, both students' UI states, timer behaviour and existing study tools. Live Supabase authentication and database access checks remain pending until a project is configured. Run `supabase/verify-access.sql` and real login checks before sharing the hosted link. Visual browser testing was unavailable in this environment.

@@ -1,0 +1,29 @@
+export const themes = [
+ {id:'forest',name:'Forest',icon:'✿',description:'A quiet little corner of nature',colour:'#37664f'},
+ {id:'ocean',name:'Ocean',icon:'≈',description:'Make waves, one idea at a time',colour:'#167b91'},
+ {id:'sunset',name:'Sunset',icon:'☀',description:'Warm skies and bright ideas',colour:'#ad513e'},
+ {id:'space',name:'Space',icon:'✦',description:'For out-of-this-world discoveries',colour:'#a99bff'}
+];
+// Original recall prompts, written for the supplied topics. Not copied from online quizzes.
+export const cards = [
+ {id:'m1',subject:'maths',topic:'Fractions',question:'You spend 2/5 of your money and save 1/4 of it. What fraction is left?',answer:'7/20 is left.',why:'Use a common denominator: 2/5 = 8/20 and 1/4 = 5/20. Then 20/20 − 8/20 − 5/20 = 7/20.'},
+ {id:'m2',subject:'maths',topic:'Area & perimeter',question:'A rectangle has a perimeter of 42 cm and a length of 13 cm. What is its area?',answer:'104 cm².',why:'Length + width = 42 ÷ 2 = 21 cm. Width = 21 − 13 = 8 cm. Area = 13 × 8 = 104 cm².'},
+ {id:'m3',subject:'maths',topic:'Decimals',question:'A 5 m ribbon is cut into three pieces of 0.85 m each. How much ribbon is left?',answer:'2.45 m.',why:'The pieces use 3 × 0.85 = 2.55 m. The remaining length is 5.00 − 2.55 = 2.45 m.'},
+ {id:'m4',subject:'maths',topic:'Factors & multiples',question:'Two lights flash every 6 seconds and 8 seconds. They flash together now. When will they next flash together?',answer:'In 24 seconds.',why:'Multiples of 6: 6, 12, 18, 24. Multiples of 8: 8, 16, 24. The first shared multiple is 24.'},
+ {id:'m5',subject:'maths',topic:'Angles',question:'Two adjacent angles make a straight line. One is 68°. How large is the other?',answer:'112°.',why:'Angles on a straight line add up to 180°. So 180° − 68° = 112°.'},
+ {id:'m6',subject:'maths',topic:'Whole numbers',question:'A shop packs 1,248 pencils into boxes of 12. It sells 39 boxes. How many boxes are left?',answer:'65 boxes.',why:'1,248 ÷ 12 = 104 boxes. Then 104 − 39 = 65 boxes.'},
+ {id:'m7',subject:'maths',topic:'Pie charts',question:'Half a pie chart represents pupils who walk to school. If 120 pupils were surveyed, how many walk?',answer:'60 pupils.',why:'One half of 120 is 120 ÷ 2 = 60. Check what the whole chart represents before calculating a part.'},
+ {id:'m8',subject:'maths',topic:'Symmetry',question:'How many lines of symmetry does a rectangle have if it is not a square?',answer:'Two.',why:'One passes through the middle horizontally, the other vertically. Its diagonals are not lines of symmetry.'},
+ {id:'m9',subject:'maths',topic:'Nets',question:'A cube net has how many faces, and what shape is each face?',answer:'Six equal squares.',why:'A cube has six square faces. The squares must be arranged so they fold into a cube without overlapping.'},
+ {id:'m10',subject:'maths',topic:'Problem solving',question:'Three notebooks and a $2 pen cost $17. Each notebook costs the same. How much is one notebook?',answer:'$5.',why:'Work backwards: $17 − $2 = $15 for three notebooks. $15 ÷ 3 = $5 each.'},
+ {id:'s1',subject:'science',topic:'Heat',question:'A metal spoon and a wooden spoon are in the same hot water. Why does the metal handle get hot faster?',answer:'Metal conducts heat better than wood.',why:'Heat moves from the hotter water along the spoon towards the cooler handle. Metal transfers that heat faster.'},
+ {id:'s2',subject:'science',topic:'Light',question:'A torch, an opaque object and a screen stay in a straight line. What happens to the shadow when the object moves closer to the torch?',answer:'The shadow becomes larger, with the torch and screen fixed.',why:'The object blocks a wider spread of light rays before they reach the screen.'},
+ {id:'s3',subject:'science',topic:'Matter',question:'A sealed syringe contains air. Why can you push the plunger in a little?',answer:'Air can be compressed.',why:'Air is a gas. Its volume can decrease when it is compressed; it still has mass and occupies space.'},
+ {id:'s4',subject:'science',topic:'Magnets',question:'A bar repels one end of a known magnet. What can you conclude about the bar?',answer:'The bar is also a magnet.',why:'Repulsion is evidence of two like magnetic poles. Attraction alone could also happen with an unmagnetised magnetic material.'},
+ {id:'s5',subject:'science',topic:'Materials',question:'Why is “waterproof” a useful property for a raincoat, but not for the absorbent part of a towel?',answer:'A raincoat should keep water out; a towel should absorb it.',why:'Choose a material by matching its properties to the job it needs to do.'},
+ {id:'s6',subject:'science',topic:'Digestive system',question:'Where are most digested nutrients absorbed into the blood?',answer:'The small intestine.',why:'Digestion breaks food down into simpler substances. Absorption moves digested nutrients into the blood.'},
+ {id:'s7',subject:'science',topic:'Plant parts',question:'What are two functions of a plant’s roots?',answer:'They absorb water and mineral salts, and anchor the plant.',why:'Do not confuse water absorption with food-making: green leaves make food using light.'},
+ {id:'s8',subject:'science',topic:'Life cycles',question:'How is a butterfly’s life cycle different from a grasshopper’s?',answer:'A butterfly has a pupa stage; a grasshopper does not.',why:'Butterfly: egg → larva → pupa → adult. Grasshopper: egg → nymph → adult.'},
+ {id:'s9',subject:'science',topic:'Living things',question:'A toy car moves when switched on. Does movement alone prove that it is alive?',answer:'No.',why:'Use several characteristics of living things, such as growth and reproduction. Non-living objects can move too.'},
+ {id:'s10',subject:'science',topic:'Heat',question:'An ice cube melts in your hand. Does cold move from the ice into your hand?',answer:'No. Heat moves from your warmer hand to the colder ice.',why:'The ice gains heat and melts. Your hand loses heat and feels colder.'}
+];
