@@ -17,7 +17,7 @@ Open http://localhost:3030. Node.js 22+ is required only for this local preview 
 ## Learning tools
 
 - Revision room: external online practice selected for the student's syllabus.
-- Flip & learn: original recall flashcards assigned to that student.
+- Flip & learn: 10 syllabus-matched cards each Singapore day (5 Maths + 5 Science), plus the full library. Enable the expanded bank with [DAILY_FLASHCARDS_SETUP.md](DAILY_FLASHCARDS_SETUP.md).
 - Focus corner: their study guidance, timer and scratchpad.
 - Learning path: their topics, exam formats and confidence ratings.
 - Weekly challenge: Lauren and Caleb share weekly progress bars for revision and focus sessions; enable with [WEEKLY_CHALLENGE_SETUP.md](WEEKLY_CHALLENGE_SETUP.md).

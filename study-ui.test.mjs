@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import {themes} from './public/themes.js';
 import {readContent,scopedStorage} from './public/auth.js';
 import * as progressHelpers from './public/progress.js';
+import {dailyCards} from './public/daily-cards.js';
 import {challengeView,awardMessage} from './public/challenge.js';
 import {filesView} from './public/files.js';
 import {student2Content} from './private-content/student-2.mjs';
@@ -15,7 +16,7 @@ function fixture(){
  const get=s=>{if(!nodes.has(s))nodes.set(s,element());return nodes.get(s);};
  const document={documentElement:{dataset:{}},querySelector:get,querySelectorAll:()=>[],addEventListener(){},activeElement:element()};
  let stored=null;const storage={getItem:()=>stored,setItem:(_,v)=>stored=v};
- const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},filesView,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
+ const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},filesView,dailyCards,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
  vm.runInContext(code,context);vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'one'},display_name:'Lauren',content:seed})})`,context);return {context,nodes,get};
 }
 test('assigned study pages render in all four themes with uploads only in My files',()=>{
@@ -30,7 +31,7 @@ test('Student 2 gets pending syllabus pages and a separate focus corner',()=>{co
 test('Student 2 supplied plan has its own topics, exams, assessments and resources',()=>{
  assert.equal(student2Content.topics.filter(t=>t.subject==='maths').length,14);
  assert.equal(student2Content.topics.filter(t=>t.subject==='science').length,12);
- assert.equal(student2Content.cards.length,28);
+ assert.equal(student2Content.cards.length,110);
  assert.equal(student2Content.resources.some(r=>r.id==='magnets'),true);
  for(const subject of ['maths','science'])assert.equal(student2Content.assessments.filter(a=>a.subject===subject).reduce((n,a)=>n+a.weight,0),100);
  const {context,get}=fixture();vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'two'},display_name:'Caleb',content:student2Content})})`,context);
@@ -42,7 +43,7 @@ test('search and saved filters, flashcard reveal and focus completion behave cor
  const filtered=vm.runInContext("subject='science';search='heat';resourceResults()",context);assert.match(filtered,/Heat: compare/);assert.doesNotMatch(filtered,/Decimals in word/);
  assert.match(vm.runInContext("onlySaved=true;progress.favourites=[];resourceResults()",context),/No little discoveries/);
  const saved=vm.runInContext("progress.favourites=['heat'];resourceResults()",context);assert.match(saved,/Heat: compare/);
- vm.runInContext("page='flashcards';rebuildDeck();action('flip')",context);assert.match(get('#app').innerHTML,/7\/20 is left/);
+ vm.runInContext("page='flashcards';cardMode='library';rebuildDeck();action('flip')",context);assert.match(get('#app').innerHTML,/7\/20 is left/);
  vm.runInContext("reviewOnly=true;progress.known=cards.map(c=>c.id);rebuildDeck();render()",context);assert.match(get('#app').innerHTML,/Looking familiar/);
  vm.runInContext("page='focus';progress.timer={mode:'focus',duration:600,remaining:600,endAt:Date.now()-1000};tick();tick()",context);assert.equal(vm.runInContext('progress.focusSessions',context),1);assert.equal(vm.runInContext('today().focus',context),true);
  vm.runInContext("progress.notes='<img src=x onerror=alert(1)>';render()",context);assert.match(get('#app').innerHTML,/&lt;img/);assert.doesNotMatch(get('#app').innerHTML,/<img src=x/);
@@ -68,4 +69,13 @@ test('server remaining time defeats local clock changes and start retry preserve
 test('late point response cannot update another signed-in account',async()=>{
  const {context}=fixture();let resolve;context.late=new Promise(r=>resolve=r);vm.runInContext("challenge={revision:()=>late,board:async()=>[]}",context);const request=vm.runInContext("recordRevision('heat')",context);
  vm.runInContext("profile={user:{id:'two'},display_name:'Caleb'};challenge=null;progress=freshProgress()",context);resolve('awarded');await request;assert.equal(vm.runInContext('today().practice',context),false);
+});
+
+test('Flip & Learn defaults to daily cards, filters within the set and refreshes a stale day',()=>{
+ const {context,get}=fixture();vm.runInContext("page='flashcards';render()",context);assert.match(get('#app').innerHTML,/Today’s 10 cards/);assert.equal(vm.runInContext('deck.length',context),10);
+ const todayIds=vm.runInContext('deck.map(c=>c.id).join()',context);
+ vm.runInContext("cardSubject='science';rebuildDeck()",context);assert.equal(vm.runInContext('deck.length',context),5);assert.equal(vm.runInContext("deck.every(c=>c.subject==='science')",context),true);
+ vm.runInContext("cardSubject='all';rebuildDeck();progress.known=[deck[0].id];reviewOnly=true;rebuildDeck()",context);assert.equal(vm.runInContext('deck.length',context),9);
+ vm.runInContext("reviewOnly=false;cardIndex=5;revealed=true;deckDay='2000-01-01';tick()",context);assert.equal(vm.runInContext('cardIndex',context),0);assert.equal(vm.runInContext('revealed',context),false);assert.equal(vm.runInContext('deck.map(c=>c.id).join()',context),todayIds);
+ vm.runInContext("cardMode='library';rebuildDeck();render()",context);assert.equal(vm.runInContext('deck.length',context),102);assert.match(get('#app').innerHTML,/Full library \(102\)/);
 });

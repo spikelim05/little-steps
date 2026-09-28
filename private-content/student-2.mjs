@@ -1,4 +1,5 @@
 import {cards} from './study-data.mjs';
+import {extraFlashcards} from './extra-flashcards.mjs';
 import {revisionResources} from './revision.mjs';
 
 const mathsNames=['Numbers to 100 000','Factors & Multiples','Four Operations of Whole Numbers','Tables and Line Graphs','Fractions (I)','Fractions (II)','Angles','Rectangles and Squares','Decimals','Four Operations of Decimals','Pie Charts','Area and Perimeter','Nets','Symmetry'];
@@ -21,7 +22,7 @@ export const student2Content={
  version:1,pending:false,level:'Primary 4 · St. Stephen’s School · 2026',
  subjects:[{id:'maths',name:'Mathematics',symbol:'÷',line:'Build confidence, chapter by chapter.',tags:'14 chapters · End-year exam 3 Nov'},{id:'science',name:'Science',symbol:'✳',line:'Explore systems, light and heat.',tags:'P4 chapters + P3 revision · Exam 2 Nov'}],
  topics:[...mathsNames.map((name,i)=>({id:`s2-m${i+1}`,name,subject:'maths',chapter:i+1,level:'P4',theme:`Term ${i<4?1:i<8?2:i<11?3:4}`})),...scienceNames.map((name,i)=>({id:`s2-s${i+1}`,name,subject:'science',chapter:i+1,level:'P4',theme:['Terms 1–2','Term 2','Term 1','Term 2','Terms 2–3','Term 3','Terms 3–4'][i]})),...p3Names.map((name,i)=>({id:`s2-p3-${i+1}`,name,subject:'science',level:'P3',theme:'End-year revision · MOE P3 scope'}))],
- cards:[...cards.filter(c=>c.subject==='maths'||['s1','s2','s3','s4','s5','s7','s8','s9','s10'].includes(c.id)).map(c=>({...c,id:'s2-'+c.id,topic:c.id==='s2'?'Shadows':c.id==='s7'?'Plant System':c.topic})),...extraCards],
+ cards:[...cards.filter(c=>c.subject==='maths'||['s1','s2','s3','s4','s5','s7','s8','s9','s10'].includes(c.id)).map(c=>({...c,id:'s2-'+c.id,topic:c.id==='s2'?'Shadows':c.id==='s7'?'Plant System':c.topic})),...extraCards,...extraFlashcards.map(c=>({...c,id:'s2-'+c.id,topic:c.topic==='Plant parts'?'Plant System':c.topic}))],
  resources:revisionResources.map(r=>({...r,topics:r.id==='light'?'Ch 4: Light · Ch 5: Shadows':r.id==='heat'?'Ch 6: Heat · Ch 7: Effects of Heat':r.id==='matter'?'Ch 3: Matter':r.topics})),
  exams:{
   maths:{marks:100,lines:['End Year Exam: Tuesday, 3 November 2026.','Assessment weighting: 60% of the year.','All 14 chapters are included. The supplied plan does not give question counts or paper sections.']},

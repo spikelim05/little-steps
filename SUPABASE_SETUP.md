@@ -87,6 +87,10 @@ Send the Render link and each student's own login details privately. Your comput
 
 Run `supabase/competition.sql` after assigning both accounts to show Lauren and Caleb on the weekly board and enable scoring. See [WEEKLY_CHALLENGE_SETUP.md](WEEKLY_CHALLENGE_SETUP.md). Only names and weekly totals are shared; private content access is unchanged.
 
+## Daily flashcards
+
+Run `supabase/daily-flashcards.sql` to expand the two question banks without changing other content. See [DAILY_FLASHCARDS_SETUP.md](DAILY_FLASHCARDS_SETUP.md). The frontend rotates 10 cards daily at midnight Singapore time.
+
 ## Account maintenance
 
 Students can change their password under the palette/settings button using their current password. A forgotten password needs tutor help through Supabase's administrative account tools. Email recovery is not wired into this website; a production email recovery flow would need email delivery configuration and an allowed redirect URL. Do not place administrative keys in the browser to implement a reset.

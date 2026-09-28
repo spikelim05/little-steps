@@ -51,7 +51,7 @@ Source books: P4 Inspiring Science Textbook and Activity Book.
 - Fractions (I) and (II) are separate checklist chapters. Their detailed subskills are not specified.
 - Neither image supplies end-year paper sections or question counts. Student 1's formats and equipment reminder are not copied to Student 2.
 - Revision links are selected from the existing vetted collection for Maths, light/shadows, heat and matter. This is partial coverage; there are no dedicated online resources yet for every chapter. The existing magnets practice link is now included for P3 revision.
-- Flip & learn contains 28 original recall prompts selected or written for the P4 topics and P3 revision. The flashcards are self-checks, not online examination questions.
+- Flip & learn contains 110 original recall prompts selected or written for the P4 topics and P3 revision. The flashcards are self-checks, not online examination questions.
 - `supabase/student-2.sql` contains the updated account assignment. This local file still needs to be applied to the connected Supabase project with Student 2's actual user ID.
 
 ## P3 Science research (28 September 2026)
