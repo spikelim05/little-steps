@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {StudentAuth,usernameEmail,validConfig,scopedStorage,readContent} from './public/auth.js';
 import {freshProgress,saveProgress,loadProgress} from './public/progress.js';
-function client({id='one',rowId=id,assigned=true,error=false}={}){
+function client({id='one',rowId=id,assigned=true,error=false,email=''}={}){
  const calls=[];
  return {
   calls,
-  auth:{signInWithPassword:async args=>{calls.push(args);return {error:error?Error():null};},getUser:async()=>({data:{user:{id}},error:null}),signOut:async()=>({error:null}),updateUser:async args=>{calls.push(args);return {error:null};}},
+  auth:{signInWithPassword:async args=>{calls.push(args);return {error:error?Error():null};},getUser:async()=>({data:{user:{id,email}},error:null}),signOut:async()=>({error:null}),updateUser:async args=>{calls.push(args);return {error:null};}},
   from(table){
    assert.equal(table,'student_spaces');
    return {
@@ -38,3 +38,5 @@ test('login form submits a username and has no email field',async()=>{
  assert.match(source,/data.get\('username'\)/);
  assert.doesNotMatch(source,/name="email"|type="email"/);
 });
+
+test('verified accounts show Lauren and Caleb without changing their assignments',async()=>{for(const [email,name] of [['laurenp4','Lauren'],['calebp4','Caleb']]){const space=await new StudentAuth(client({email:email+'@students.little-steps.invalid'})).loadSpace();assert.equal(space.display_name,name);assert.equal(space.user_id,'one');}});

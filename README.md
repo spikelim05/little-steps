@@ -20,6 +20,7 @@ Open http://localhost:3030. Node.js 22+ is required only for this local preview 
 - Flip & learn: original recall flashcards assigned to that student.
 - Focus corner: their study guidance, timer and scratchpad.
 - Learning path: their topics, exam formats and confidence ratings.
+- Weekly challenge: Lauren and Caleb share weekly progress bars for revision and focus sessions; enable with [WEEKLY_CHALLENGE_SETUP.md](WEEKLY_CHALLENGE_SETUP.md).
 - My files: account-private PDFs and photos, available across devices, up to 5 MB each.
 - Forest, Ocean, Sunset and Space themes, bookmarks and daily goals.
 
@@ -29,7 +30,7 @@ Both students' Maths and Science content is prepared separately. Student 2 follo
 
 Passwords are managed by Supabase Auth, not embedded in JavaScript. Supabase stores a small content record for each account. Row Level Security permits only the matching authenticated UID to read its record; students cannot edit assignments or choose another student's UID to gain access. Public sign-ups should be disabled.
 
-LocalStorage keeps optional progress, themes, timer state and notes separately by account on the device. These do not sync to the tutor or other devices and are not encrypted against the device owner. The sign-in session uses sessionStorage. Students can change passwords under settings; there is no self-service forgotten-password email flow in this app.
+Weekly challenge scores are stored in Supabase and shared only between the two enrolled students. LocalStorage keeps other optional progress, themes, timer state and notes separately by account on the device. These do not sync to the tutor or other devices and are not encrypted against the device owner. The sign-in session uses sessionStorage. Students can change passwords under settings; there is no self-service forgotten-password email flow in this app.
 
 Uploads go directly to Supabase Storage using the signed-in session. Run the storage setup and checks in [FILE_UPLOAD_SETUP.md](FILE_UPLOAD_SETUP.md). The old `data/` directory is preserved locally and is neither read nor served. Only `public/` should be published. Do not publish `private-content/`, `supabase/` or old student data. Remove obsolete curriculum/question files from earlier static deployments; see the setup guide.
 

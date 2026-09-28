@@ -1,7 +1,7 @@
 -- Replace STUDENT_USER_UUID with this student's ID from Authentication > Users.
 -- Run only in the Supabase SQL Editor after schema.sql. No passwords go in SQL.
 insert into public.student_spaces (user_id, display_name, content)
-values ('STUDENT_USER_UUID'::uuid, 'Student 1', $content${
+values ('STUDENT_USER_UUID'::uuid, 'Lauren', $content${
   "version": 1,
   "pending": false,
   "level": "Primary level unconfirmed",

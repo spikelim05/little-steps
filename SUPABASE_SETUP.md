@@ -83,6 +83,10 @@ Sign in to the deployed URL as Student 1, sign out, then sign in as Student 2. C
 
 Send the Render link and each student's own login details privately. Your computer does not need to remain on.
 
+## Names and shared weekly progress
+
+Run `supabase/competition.sql` after assigning both accounts to show Lauren and Caleb on the weekly board and enable scoring. See [WEEKLY_CHALLENGE_SETUP.md](WEEKLY_CHALLENGE_SETUP.md). Only names and weekly totals are shared; private content access is unchanged.
+
 ## Account maintenance
 
 Students can change their password under the palette/settings button using their current password. A forgotten password needs tutor help through Supabase's administrative account tools. Email recovery is not wired into this website; a production email recovery flow would need email delivery configuration and an allowed redirect URL. Do not place administrative keys in the browser to implement a reset.
