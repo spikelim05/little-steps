@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import {themes} from './public/themes.js';
 import {readContent,scopedStorage} from './public/auth.js';
 import * as progressHelpers from './public/progress.js';
+import {filesView} from './public/files.js';
 import {student2Content} from './private-content/student-2.mjs';
 const code=(await readFile('public/study.js','utf8')).replace(/^import .*;\n/gm,'').replace(/boot\(\);setInterval[^\n]*$/m,'');
 const seed=JSON.parse((await readFile('supabase/student-1.sql','utf8')).split('$content$')[1]);
@@ -13,14 +14,14 @@ function fixture(){
  const get=s=>{if(!nodes.has(s))nodes.set(s,element());return nodes.get(s);};
  const document={documentElement:{dataset:{}},querySelector:get,querySelectorAll:()=>[],addEventListener(){},activeElement:element()};
  let stored=null;const storage={getItem:()=>stored,setItem:(_,v)=>stored=v};
- const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,console});
+ const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},filesView,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,console});
  vm.runInContext(code,context);vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'one'},display_name:'Student 1',content:seed})})`,context);return {context,nodes,get};
 }
-test('assigned study pages render in all four themes with sign-out and no uploads',()=>{
+test('assigned study pages render in all four themes with uploads only in My files',()=>{
  const {context,get}=fixture();
- for(const theme of themes)for(const page of ['home','revision','flashcards','focus','syllabus']){
+ for(const theme of themes)for(const page of ['home','revision','flashcards','focus','syllabus','files']){
   vm.runInContext(`progress.theme=${JSON.stringify(theme.id)};page=${JSON.stringify(page)};render()`,context);
-  const html=get('#app').innerHTML;assert.match(html,/Sign out/);assert.doesNotMatch(html,/type="file"|No sign-in needed/);
+  const html=get('#app').innerHTML;assert.match(html,/Sign out/);assert.doesNotMatch(html,/No sign-in needed/);if(page==='files')assert.match(html,/type="file"/);else assert.doesNotMatch(html,/type="file"/);
   if(page==='syllabus'){assert.match(html,/Numbers to 100 000/);assert.match(html,/Digestive system/);}
  }
 });

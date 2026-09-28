@@ -1,10 +1,10 @@
 ﻿# Little Steps - personal student revision spaces
 
-A static website with genuine email/password sign-in provided by Supabase. Each student receives only the learning content assigned to their verified account. Render can continue to host the frontend as a Static Site; no upload service or permanent server disk is needed.
+A static website with username/password sign-in provided by Supabase. Each student receives only the learning content assigned to their verified account. Render can continue to host the frontend as a Static Site; uploaded files are stored in private Supabase Storage, without a permanent Render server disk.
 
 ## Required setup
 
-Read [SUPABASE_SETUP.md](SUPABASE_SETUP.md). Connect a Supabase project, run the RLS schema, create the student accounts, and assign their content. `public/config.js` is deliberately empty until you supply the project's public settings. Without them the login page stays locked; no fake login bypass exists.
+Read [SUPABASE_SETUP.md](SUPABASE_SETUP.md). Connect a Supabase project, run the RLS schema, create the student accounts, and assign their content. `public/config.js` contains the project's public connection settings. Run `supabase/storage.sql` once to enable the My files feature.
 
 ## Local preview
 
@@ -20,6 +20,7 @@ Open http://localhost:3030. Node.js 22+ is required only for this local preview 
 - Flip & learn: original recall flashcards assigned to that student.
 - Focus corner: their study guidance, timer and scratchpad.
 - Learning path: their topics, exam formats and confidence ratings.
+- My files: account-private PDFs and photos, available across devices, up to 5 MB each.
 - Forest, Ocean, Sunset and Space themes, bookmarks and daily goals.
 
 Both students' Maths and Science content is prepared separately. Student 2 follows St. Stephen's School Primary 4 assessment plans for 2026, including 14 Maths chapters, 7 named P4 Science chapters and the term assessment schedule. P3 revision groups follow the MOE 2023 syllabus, with the school’s listed Inspiring Science P3 textbook confirmed; a separate school P3 assessment plan was not found. Account creation and hosted assignment still require the setup steps.
@@ -30,7 +31,7 @@ Passwords are managed by Supabase Auth, not embedded in JavaScript. Supabase sto
 
 LocalStorage keeps optional progress, themes, timer state and notes separately by account on the device. These do not sync to the tutor or other devices and are not encrypted against the device owner. The sign-in session uses sessionStorage. Students can change passwords under settings; there is no self-service forgotten-password email flow in this app.
 
-There are no uploads. The old `data/` directory is preserved locally and is neither read nor served. Only `public/` should be published. Do not publish `private-content/`, `supabase/` or old student data. Remove obsolete curriculum/question files from earlier static deployments; see the setup guide.
+Uploads go directly to Supabase Storage using the signed-in session. Run the storage setup and checks in [FILE_UPLOAD_SETUP.md](FILE_UPLOAD_SETUP.md). The old `data/` directory is preserved locally and is neither read nor served. Only `public/` should be published. Do not publish `private-content/`, `supabase/` or old student data. Remove obsolete curriculum/question files from earlier static deployments; see the setup guide.
 
 ## Content editing
 

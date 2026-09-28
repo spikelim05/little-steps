@@ -1,6 +1,6 @@
 # Connect student accounts
 
-The website still runs on Render as a Static Site. Supabase supplies password authentication and one small, private content record per student. There are no uploads or file-storage buckets. Student notes and progress remain on their device, separately keyed to their account.
+The website still runs on Render as a Static Site. Supabase supplies password authentication and one small, private content record per student. Optional file uploads use a private Supabase Storage bucket; see [FILE_UPLOAD_SETUP.md](FILE_UPLOAD_SETUP.md). Student notes and progress remain on their device, separately keyed to their account.
 
 The login page intentionally stays locked until these steps are complete. No default or pretend passwords are included.
 

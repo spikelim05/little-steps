@@ -62,4 +62,4 @@ The supplied image labels this as the new format.
 
 ## Content status
 
-The revision room links to selected online Maths and Science practice from Home Campus, IXL Singapore and MCQ.SG. These cover part of the scope, not full examination papers or every topic. The site also includes original self-check flashcards. Students use paper or the device-local scratchpad for their working and discuss it with their tutor; there are no uploads, tutor accounts, or shared feedback in this static version. External scores do not sync. English was not included in the supplied image.
+The revision room links to selected online Maths and Science practice from Home Campus, IXL Singapore and MCQ.SG. These cover part of the scope, not full examination papers or every topic. The site also includes original self-check flashcards. Students use paper or the device-local scratchpad for their working and discuss it with their tutor; students can save PDFs and photos in My files once storage setup is complete. There are no tutor accounts or shared feedback in this version. External scores do not sync. English was not included in the supplied image.

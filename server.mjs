@@ -7,7 +7,7 @@ import path from 'node:path';
 // Student authentication/content are supplied by Supabase, not this preview server.
 // No uploads, local API, or filesystem writes.
 const root=path.join(path.dirname(fileURLToPath(import.meta.url)),'public');
-const files=new Set(['index.html','study.css','study.js','progress.js','themes.js','config.js','auth.js','login-view.js']);
+const files=new Set(['index.html','study.css','study.js','progress.js','themes.js','config.js','auth.js','login-view.js','files.js']);
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8'};
 const server=http.createServer(async(req,res)=>{
  res.setHeader('X-Content-Type-Options','nosniff');
