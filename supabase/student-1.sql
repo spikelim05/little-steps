@@ -4,7 +4,7 @@ insert into public.student_spaces (user_id, display_name, content)
 values ('STUDENT_USER_UUID'::uuid, 'Lauren', $content${
   "version": 1,
   "pending": false,
-  "level": "Primary level unconfirmed",
+  "level": "Primary 4 · CHIJ Our Lady of the Nativity (OLN) · 2026",
   "subjects": [
     {
       "id": "maths",
