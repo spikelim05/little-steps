@@ -1,3 +1,4 @@
+import {tutorInboxView} from './public/tutoring.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -16,12 +17,12 @@ function fixture(){
  const get=s=>{if(!nodes.has(s))nodes.set(s,element());return nodes.get(s);};
  const document={documentElement:{dataset:{}},querySelector:get,querySelectorAll:()=>[],addEventListener(){},activeElement:element()};
  let stored=null;const storage={getItem:()=>stored,setItem:(_,v)=>stored=v};
- const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},filesView,dailyCards,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
+ const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},tutorInboxView,filesView,dailyCards,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
  vm.runInContext(code,context);vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'one'},display_name:'Lauren',content:seed})})`,context);return {context,nodes,get};
 }
 test('assigned study pages render in all available themes with uploads only in My files',()=>{
  const {context,get}=fixture();
- for(const theme of themes)for(const page of ['home','revision','flashcards','focus','syllabus','files']){
+ for(const theme of themes)for(const page of ['home','revision','flashcards','focus','syllabus','files','tutor']){
   vm.runInContext(`progress.theme=${JSON.stringify(theme.id)};page=${JSON.stringify(page)};render()`,context);
   const html=get('#app').innerHTML;assert.match(html,/Sign out/);assert.doesNotMatch(html,/No sign-in needed/);if(page==='files')assert.match(html,/type="file"/);else assert.doesNotMatch(html,/type="file"/);
   if(page==='syllabus'){assert.match(html,/Numbers to 100 000/);assert.match(html,/Digestive system/);}

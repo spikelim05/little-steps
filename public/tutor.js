@@ -1,19 +1,72 @@
+import {themes} from './themes.js';
+import {Tutoring,escapeHtml,safeLink,itemCards} from './tutoring.js';
+export function materialView(student,tab='topics'){
+ if(!student)return '<p>Select a student to explore their learning space.</p>';
+ const c=student.content||{},e=escapeHtml;
+ const intro=`<div class="info-strip"><p>${e(student.name)}’s assigned materials. Use these to plan your lessons and choose what to send next.</p></div>`;
+ if(tab==='resources')return intro+`<div class="guidance-grid">${(c.resources||[]).map(r=>`<article class="panel guidance-card"><span class="eyebrow">${e(r.provider)}</span><h2>${e(r.title)}</h2><p>${e(r.topics)}</p><p>${e(r.task||r.focus)}</p>${safeLink(r.url)?`<a class="button secondary" href="${e(safeLink(r.url))}" target="_blank" rel="noopener noreferrer">Open practice ↗</a><button class="text-button" data-assign-resource="${e(r.id)}">Set as a task →</button>`:''}</article>`).join('')}</div>`;
+ if(tab==='cards')return intro+`<div class="guidance-grid">${(c.cards||[]).map(r=>`<details class="panel guidance-card"><summary>${e(r.topic)} · ${e(r.question)}</summary><p>${e(r.answer)}</p><p class="muted">${e(r.why)}</p></details>`).join('')}</div>`;
+ return intro+`<div class="syllabus-columns">${(c.subjects||[]).map(s=>`<section class="panel topic-panel"><h2>${e(s.name)}</h2>${(c.topics||[]).filter(t=>t.subject===s.id).map(t=>`<div class="topic-row"><span>${e(t.name)}</span></div>`).join('')}</section>`).join('')}</div>`;
+}
+
+export function composeView(students,draft){
+ const e=escapeHtml;
+ return `<div class="page-intro"><div><div class="eyebrow">YOUR NEXT LITTLE NUDGE</div><h1>${draft.editing?'Edit your guidance':'Give a little guidance'}</h1><p>Send a task, feedback, a note or a helpful link to a student’s learning space.</p></div></div><form id="guidance-form" class="panel guidance-form"><div class="guidance-fields"><label>Student<select name="student_id" required ${draft.editing?'disabled':''}>${students.map(s=>`<option value="${e(s.id)}" ${draft.student_id===s.id?'selected':''}>${e(s.name)}</option>`).join('')}</select></label><label>What are you sharing?<select name="kind" ${draft.editing?'disabled':''}>${[['task','Task'],['feedback','Personal feedback'],['note','Study note'],['link','Revision link']].map(([id,label])=>`<option value="${id}" ${draft.kind===id?'selected':''}>${label}</option>`).join('')}</select></label></div><label>Title<input name="title" maxlength="120" required value="${e(draft.title)}" placeholder="e.g. A little practice with fractions"></label><label>Instructions, notes or feedback<textarea name="body" maxlength="5000" rows="7" placeholder="Explain what to try, celebrate an improvement, or add a useful reminder.">${e(draft.body)}</textarea></label><label>Revision link ${draft.kind==='link'?'':'(optional)'}<input name="url" type="url" maxlength="2000" ${draft.kind==='link'?'required':''} value="${e(draft.url)}" placeholder="https://…"></label><label ${draft.kind==='task'?'':'hidden'}>Due date (optional)<input name="due_on" type="date" value="${e(draft.due_on)}"></label><p class="muted">Only the selected student and their tutor can see this. It appears in “From my tutor”.</p><div class="guidance-actions"><button class="button primary" type="submit">${draft.editing?'Save changes':'Send to student'} ↗</button><button class="button secondary" type="button" id="clear-draft">Clear draft</button></div><p id="compose-status" role="status"></p></form>`;
+}
+
+export function mountTutor({root,auth,userId,onSignOut}){
+ let disposed=false,loading=false,sending=false,page='home',selected='',materialTab='topics',workspace=null,board=null,loadError='',notice='';
+ const service=new Tutoring(auth.client,userId),key='little-steps-tutor-theme:'+userId;
+ let theme='forest';try{const saved=localStorage.getItem(key);if(themes.some(t=>t.id===saved))theme=saved;}catch{}
+ const newDraft=()=>({id:crypto.randomUUID(),student_id:selected||workspace?.students[0]?.id||'',kind:'task',title:'',body:'',url:'',due_on:''});
+ let draft=newDraft();
+ const nav=[['home','⌂','My tutor space'],['progress','↗','Student progress'],['materials','▤','Learning materials'],['compose','✎','Give guidance'],['sent','✉','Sent to students'],['themes','✦','Make it your own']];
+ function setTheme(){document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=themes.find(t=>t.id===theme).colour;}
+ function overview(){const pending=workspace?.items.filter(x=>x.kind==='task'&&!x.completed_at).length||0,done=workspace?.items.filter(x=>x.kind==='task'&&x.completed_at).length||0;
+  return `<div class="page-intro"><div><div class="eyebrow">SMALL STEPS, SHARED TOGETHER</div><h1>Hello, Tutor. <span class="heading-spark">✦</span></h1><p>A little encouragement. A thoughtful task. A next step for every learner.</p></div></div><section class="hero"><div class="hero-copy"><span class="eyebrow">MAKE ROOM FOR THEIR NEXT DISCOVERY</span><h2>Help their next<br>little step happen.</h2><p>Plan a practice, share a helpful note,<br>and celebrate the progress along the way.</p><button class="button primary" data-tutor-page="compose">Give a little guidance →</button><span class="hero-footnote">Your teaching corner, made for curious minds.</span></div><div class="tutor-hero-art" aria-hidden="true"><span>✧</span><b>${esc(themes.find(t=>t.id===theme).mascot||'🌱')}</b><small>little steps.<br>big possibilities.</small></div></section><section class="stats-grid"><div><span><strong>${workspace?.students.length??'—'}</strong><small>Your learners</small></span></div><div><span><strong>${pending}</strong><small>Tasks to do</small></span></div><div><span><strong>${done}</strong><small>Tasks marked done</small></span></div></section><div class="section-title"><h2>Who shall we support today?</h2><button class="text-button" data-tutor-page="progress">View progress →</button></div><div class="subject-grid">${(workspace?.students||[]).map((s,i)=>{const score=board?.students.find(b=>b.name===s.name);return `<article class="subject-card ${i?'science':'maths'}"><span class="subject-symbol">${i?'✦':'✿'}</span><h3>${esc(s.name)}</h3><p>${esc(s.content?.level||'Your learner’s personal space')}</p><small>${score?esc(score.weekly_points)+' points this week':'Progress will appear after refreshing'}</small><button class="subject-link" data-guide-student="${esc(s.id)}">Plan their next step <span>↗</span></button></article>`;}).join('')}</div>`;
+ }
+ function selector(){return `<label class="tutor-student-select">Learning space<select id="material-student">${(workspace?.students||[]).map(s=>`<option value="${esc(s.id)}" ${selected===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label>`;}
+ function view(){
+  if(page==='progress')return board?tutorView(board):'<p>Progress is unavailable. Refresh to try again.</p>';
+  if(page==='compose')return workspace?composeView(workspace.students,draft):'<p>Your guidance tools will appear after the workspace setup is complete.</p>';
+  if(page==='sent')return `<div class="page-intro"><div><div class="eyebrow">A LITTLE FOLLOW-THROUGH</div><h1>Sent to students</h1><p>Follow up on tasks and revisit the guidance you’ve shared. Task completion is student-reported.</p></div></div><div class="guidance-grid">${workspace?itemCards(workspace.items,{tutor:true,students:workspace.students}):'<p>Guidance is unavailable. Refresh to try again.</p>'}</div>`;
+  if(page==='materials')return `<div class="page-intro"><div><div class="eyebrow">PREPARE THEIR NEXT DISCOVERY</div><h1>Learning materials</h1><p>Browse the syllabus, revision room and flashcards assigned to each student.</p></div></div>${selector()}<div class="tabs tutor-material-tabs">${[['topics','Learning path'],['resources','Revision room'],['cards','Flip & learn']].map(([id,label])=>`<button data-material-tab="${id}" class="${materialTab===id?'selected':''}" aria-pressed="${materialTab===id}">${label}</button>`).join('')}</div>${materialView(workspace?.students.find(s=>s.id===selected),materialTab)}`;
+  if(page==='themes')return `<div class="page-intro"><div><h1>Make it your own ✦</h1><p>The same playful themes, for your own teaching corner.</p></div></div><div class="theme-grid">${themes.map(t=>`<button class="theme-option ${theme===t.id?'selected':''}" data-tutor-theme="${t.id}" aria-pressed="${theme===t.id}"><span class="theme-preview ${t.id}"><b>${esc(t.mascot||t.icon)}</b></span><strong>${esc(t.name)}</strong><small>${esc(t.description)}</small></button>`).join('')}</div>`;
+  return overview();
+ }
+ function render(){if(disposed)return;setTheme();const current=nav.find(n=>n[0]===page);
+  root.innerHTML=`<aside class="sidebar"><a class="brand" href="#tutor" data-tutor-page="home"><span class="brand-flower">✳</span><span>little steps<small>A LITTLE EVERY DAY</small></span></a><div class="nav-caption">MAKE ROOM FOR THEIR GROWTH</div><nav aria-label="Tutor navigation">${nav.map(([id,i,label])=>`<a href="#tutor-${id}" data-tutor-page="${id}" class="nav-link ${page===id?'active':''}" ${page===id?'aria-current="page"':''}><span aria-hidden="true">${i}</span><span>${label}</span>${page===id?'<span class="nav-dot"></span>':''}</a>`).join('')}</nav><div class="sidebar-grow"><div class="plant-art" aria-hidden="true"><span>✦</span><b>${esc(themes.find(t=>t.id===theme).mascot||'🌱')}</b><span>✧</span></div><strong>A little guidance goes far.</strong><p>Help every learner find their next step.</p></div><div class="student-label"><span class="avatar">Tu</span><span><strong>Tutor</strong><small>Your teaching corner</small></span></div></aside><div class="content-shell"><header class="topbar"><div class="breadcrumbs">My teaching space <span>/</span> <strong>${current[2]}</strong></div><div class="topbar-right"><button class="text-button" id="tutor-refresh" ${loading||sending?'disabled':''}>Refresh</button><button class="text-button" id="tutor-signout">Sign out</button></div></header><main id="main" tabindex="-1"><p id="tutor-status" role="status">${esc(loadError||notice)}</p>${view()}</main><footer><span>A little guidance. A lasting difference.</span><span>Guidance saved online · Refreshes every minute</span></footer></div>`;
+  root.querySelectorAll('[data-tutor-page]').forEach(b=>b.onclick=e=>{e.preventDefault();if(sending)return;page=b.dataset.tutorPage;render();root.querySelector('#main').focus();});
+  root.querySelector('#tutor-refresh').onclick=()=>refresh();
+  root.querySelector('#tutor-signout').onclick=async()=>{try{await auth.signOut();if(!disposed)onSignOut();}catch{if(!disposed)root.querySelector('#tutor-status').textContent='Sign-out failed. Reconnect and try again.';}};
+  root.querySelectorAll('[data-tutor-theme]').forEach(b=>b.onclick=()=>{theme=b.dataset.tutorTheme;try{localStorage.setItem(key,theme);}catch{}render();});
+  root.querySelectorAll('[data-guide-student]').forEach(b=>b.onclick=()=>{selected=b.dataset.guideStudent;draft=newDraft();page='compose';render();});
+  const studentSelect=root.querySelector('#material-student');if(studentSelect)studentSelect.onchange=()=>{selected=studentSelect.value;render();};
+  root.querySelectorAll('[data-material-tab]').forEach(b=>b.onclick=()=>{materialTab=b.dataset.materialTab;render();});
+  root.querySelectorAll('[data-assign-resource]').forEach(b=>b.onclick=()=>{const r=workspace.students.find(s=>s.id===selected).content.resources.find(r=>r.id===b.dataset.assignResource);draft={...newDraft(),title:r.title,body:r.task||r.focus||'',url:r.url};page='compose';render();});
+  root.querySelectorAll('[data-edit-item]').forEach(b=>b.onclick=()=>{draft={...workspace.items.find(x=>x.id===b.dataset.editItem),editing:true};page='compose';render();});
+  root.querySelectorAll('[data-delete-item]').forEach(b=>b.onclick=async()=>{if(sending||loading||!confirm('Remove this item from the student’s page?'))return;sending=true;b.disabled=true;try{await service.remove(b.dataset.deleteItem);if(disposed)return;notice='Item removed.';sending=false;await refresh();}catch(e){if(!disposed){root.querySelector('#tutor-status').textContent=e.message;b.disabled=false;}}finally{sending=false;}});
+  const form=root.querySelector('#guidance-form');if(form){
+   form.oninput=()=>{for(const name of ['student_id','kind','title','body','url','due_on'])draft[name]=form.elements.namedItem(name).value;};
+   form.elements.namedItem('kind').onchange=()=>{form.oninput();render();};
+   root.querySelector('#clear-draft').onclick=()=>{if(confirm('Clear this unsent draft?')){draft=newDraft();render();}};
+   form.onsubmit=async e=>{e.preventDefault();if(sending)return;if(loading){root.querySelector('#compose-status').textContent='Finishing a refresh. Please send again in a moment.';return;}form.oninput();sending=true;form.querySelectorAll('input,textarea,select,button').forEach(b=>b.disabled=true);
+    try{await service.save(draft);if(disposed)return;notice='Saved. Your student can find it in From my tutor.';draft=newDraft();page='sent';sending=false;await refresh();}
+    catch(error){if(!disposed){root.querySelector('#compose-status').textContent=error.message;form.querySelectorAll('input,textarea,select,button').forEach(b=>b.disabled=false);if(draft.editing){form.elements.namedItem('kind').disabled=true;form.elements.namedItem('student_id').disabled=true;}}}finally{sending=false;}
+   };
+  }
+ }
+ async function refresh(background=false){if(disposed||loading||sending)return;loading=true;
+  const results=await Promise.allSettled([service.call('tutor_dashboard'),service.workspace()]);if(disposed)return;loading=false;
+  board=results[0].status==='fulfilled'?results[0].value:null;workspace=results[1].status==='fulfilled'?results[1].value:null;
+  loadError=results.filter(r=>r.status==='rejected').map(r=>r.reason.message).join(' ');
+  if(workspace){if(!workspace.students.some(s=>s.id===selected))selected=workspace.students[0]?.id||'';if(!draft.student_id)draft.student_id=selected;}
+  if(!background||!['compose','materials','themes'].includes(page))render();
+ }
+ render();refresh();const timer=setInterval(()=>{if(!document.hidden)refresh(true);},60000);
+ return ()=>{disposed=true;clearInterval(timer);};
+}
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function tutorView(data){
  return `<div class="page-intro"><div><div class="eyebrow">LITTLE STEPS · TUTOR</div><h1>Your students’ progress</h1><p>Week beginning ${esc(data.week_start)} · Singapore time</p></div></div><div class="info-strip"><p>Weekly goal: 100 points. Revision points are student-reported, not quiz scores. Points count up to three revision activities and three focus sessions per day. Flashcard recall and topic confidence stay on each student’s device.</p></div><div class="tutor-grid">${data.students.map(s=>`<section class="panel tutor-card"><h2>${esc(s.name)}</h2><p><strong>${esc(s.weekly_points)} / 100</strong> weekly points</p><progress max="100" value="${Math.min(100,Math.max(0,Number(s.weekly_points)||0))}" aria-label="${esc(s.name)} weekly goal"></progress><dl><dt>Scored revision activities · all time</dt><dd>${esc(s.revision_total)}</dd><dt>Completed focus sessions · all time</dt><dd>${esc(s.focus_total)} (${esc(s.focus_minutes)} minutes)</dd><dt>Last scored activity</dt><dd>${esc(s.last_scored_day||'No activity recorded yet')}</dd></dl><details><summary>Activity in the last four weeks</summary>${s.days.length?`<table><thead><tr><th>Date</th><th>Revision*</th><th>Focus*</th></tr></thead><tbody>${[...s.days].reverse().map(d=>`<tr><td>${esc(d.day)}</td><td>${esc(d.revision)}</td><td>${esc(d.focus)}</td></tr>`).join('')}</tbody></table><small>*Activities awarded points.</small>`:'<p>No scored activity yet. Their next completed activity will appear here.</p>'}</details></section>`).join('')}</div>`;
-}
-export function mountTutor({root,auth,userId,onSignOut}){
- let disposed=false,busy=false;
- root.innerHTML=`<main class="tutor-shell"><header class="topbar"><strong>Tutor dashboard</strong><div><button class="text-button" id="tutor-refresh">Refresh</button><button class="text-button" id="tutor-signout">Sign out</button></div></header><p id="tutor-status" role="status">Loading progress…</p><div id="tutor-content"></div></main>`;
- const status=root.querySelector('#tutor-status'),content=root.querySelector('#tutor-content'),button=root.querySelector('#tutor-refresh');
- async function refresh(){if(disposed||busy)return;busy=true;button.disabled=true;
-  try{const {data:user,error:sessionError}=await auth.client.auth.getUser();if(sessionError||!user?.user||user.user.id!==userId)throw Error();
-   const {data,error}=await auth.client.rpc('tutor_dashboard');if(error)throw Error();
-   if(disposed)return;content.innerHTML=tutorView(data);status.textContent='Updated '+new Date().toLocaleTimeString('en-SG',{timeZone:'Asia/Singapore'})+' · Refreshes every minute while this tab is open.';
-  }catch{if(!disposed){content.innerHTML='';status.textContent='Unable to load progress. Check your connection and tutor setup, then refresh.';}}
-  finally{busy=false;if(!disposed)button.disabled=false;}
- }
- button.onclick=refresh;root.querySelector('#tutor-signout').onclick=async()=>{try{await auth.signOut();onSignOut();}catch{status.textContent='Sign-out failed. Reconnect and try again.';}};
- const timer=setInterval(()=>{if(!document.hidden)refresh();},60000);refresh();
- return ()=>{disposed=true;clearInterval(timer);};
 }

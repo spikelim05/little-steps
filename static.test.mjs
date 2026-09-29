@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {readFile,readdir} from 'node:fs/promises';
 import {freshProgress,loadProgress,saveProgress,STORAGE_KEY,secondsLeft,singaporeDay} from './public/progress.js';
-let server;
-before(async()=>{server=spawn(process.execPath,['server.mjs'],{env:{...process.env,PORT:'3017'},stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);server.once('exit',code=>reject(Error('Preview exited '+code)));});});
+let server,previewPort;
+before(async()=>{server=spawn(process.execPath,['server.mjs'],{env:{...process.env,PORT:'0'},stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{server.stdout.once('data',data=>{previewPort=String(data).match(/localhost:(\d+)/)?.[1];resolve();});server.once('error',reject);server.once('exit',code=>reject(Error('Preview exited '+code)));});});
 after(async()=>{if(server&&server.exitCode===null)await new Promise(resolve=>{server.once('exit',resolve);server.kill();});});
 test('only static assets are served; private legacy files and write routes are unavailable',async()=>{
- const base='http://127.0.0.1:3017';
+ const base='http://127.0.0.1:'+previewPort;
  for(const file of await readdir('public')){const response=await fetch(base+'/'+file);assert.equal(response.status,200,file);assert.match(response.headers.get('content-type'),/text\//);}
  for(const route of ['/api/auth','/api/state','/api/file/anything','/data/hub.json','/README.md','/server.mjs','/../data/hub.json','/curriculum.js','/revision.js','/study-data.js','/private-content/curriculum.mjs','/supabase/student-1.sql'])assert.equal((await fetch(base+route)).status,404,route);
  assert.equal((await fetch(base+'/api/submissions',{method:'POST',body:'{}'})).status,405);
