@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {tutorView,materialView,composeView,mountTutor} from '../public/tutor.js';
-import {Tutoring,itemCards,safeLink,mountInbox} from '../public/tutoring.js';
+import {Tutoring,itemCards,safeLink,mountInbox,attachmentView} from '../public/tutoring.js';
 import {StudentAuth} from '../public/auth.js';
 test('tutor view escapes names and shows capped progress with honest activity labels',()=>{
  const html=tutorView({week_start:'2026-09-28',students:[{name:'<script>',weekly_points:130,revision_total:4,focus_total:5,focus_minutes:50,last_scored_day:null,days:[]}]});
@@ -55,4 +55,35 @@ test('tutor workspace uses student shell and never paints responses after sign-o
   for(const r of replies)r.resolve({data:r.name==='tutor_dashboard'?{students:[],week_start:'2026-09-28'}:{students:[{id:'one',name:'Private result'}],items:[]}});
   await settle();assert.equal(root.innerHTML,before);
  }finally{dispose();globalThis.document=originalDoc;}
+});
+
+test('guidance attachments validate files, retry the same path and verify the account',async()=>{
+ const tutor='00000000-0000-4000-8000-000000000004',item='20000000-0000-4000-8000-000000000001';
+ let user=tutor,failUpload=true;const calls=[];
+ const service=new Tutoring({auth:{getUser:async()=>({data:{user:{id:user}}})},storage:{from:bucket=>{
+  assert.equal(bucket,'guidance-files');return {
+   upload:async(path,file,options)=>{calls.push({path,file,options});return {error:failUpload?{}:null};},
+   createSignedUrl:async(path,seconds)=>{assert.equal(seconds,60);return {data:{signedUrl:'https://example.com/signed'}};}
+  };
+ }}},tutor);
+ const file={name:'worksheet.pdf',type:'application/pdf',size:1024};
+ const draft={id:item,pendingFiles:[{file}]};
+ await assert.rejects(()=>service.uploadAttachments(draft),/Guidance was saved/);
+ const path=calls[0].path;assert.ok(path.startsWith(tutor+'/'+item+'/'));
+ failUpload=false;await service.uploadAttachments(draft);assert.equal(calls[1].path,path);assert.equal(calls[1].options.upsert,true);
+ await service.uploadAttachments(draft);assert.equal(calls.length,2);assert.equal(draft.attachments.length,1);
+ assert.equal(await service.attachmentLink(path),'https://example.com/signed');
+ await assert.rejects(()=>service.uploadAttachments({id:item,pendingFiles:[{file:{...file,size:6*1024*1024}}]}),/5 MB/);
+ await assert.rejects(()=>service.uploadAttachments({id:item,pendingFiles:[{file:{...file,name:'bad.html',type:'text/html'}}]}),/PDF/);
+ user='another-account';await assert.rejects(()=>service.attachmentLink(path),/sign in/i);
+});
+
+test('removing guidance cleans attachments first and stops if storage deletion fails',async()=>{
+ const tutor='00000000-0000-4000-8000-000000000004',item='20000000-0000-4000-8000-000000000001',path=`${tutor}/${item}/file.pdf`;
+ const calls=[];let fail=true;
+ const service=new Tutoring({auth:{getUser:async()=>({data:{user:{id:tutor}}})},rpc:async(name)=>{calls.push(name);return {data:name==='tutor_item_files'?[{path}]:null};},storage:{from:()=>({remove:async()=>{calls.push('remove file');return {error:fail?{}:null};}})}},tutor);
+ await assert.rejects(()=>service.remove(item),/could not be removed/);assert.ok(!calls.includes('tutor_delete_item'));
+ calls.length=0;fail=false;await service.remove(item);assert.deepEqual(calls,['tutor_item_files','remove file','tutor_delete_item']);
+ assert.throws(()=>service.filePath('other/item/file.pdf',true),/Invalid/);
+ const html=attachmentView([{path,name:'<script>.pdf',size:1024}]);assert.ok(html.includes('&lt;script&gt;'));assert.ok(html.includes('Open file'));assert.ok(!html.includes('data-remove-attachment'));
 });
