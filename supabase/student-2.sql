@@ -1186,7 +1186,7 @@ values ('STUDENT_USER_UUID'::uuid, 'Caleb', $content${
     "maths": {
       "marks": 100,
       "lines": [
-        "End Year Exam: Tuesday, 3 November 2026.",
+        "End Year Exam: Wednesday, 28 October 2026.",
         "Assessment weighting: 60% of the year.",
         "All 14 chapters are included. The supplied plan does not give question counts or paper sections."
       ]
@@ -1194,7 +1194,7 @@ values ('STUDENT_USER_UUID'::uuid, 'Caleb', $content${
     "science": {
       "marks": 100,
       "lines": [
-        "End Year Examination: Monday, 2 November 2026.",
+        "End Year Examination: Thursday, 29 October 2026.",
         "Assessment weighting: 60% of the year.",
         "Chapters 1–7, plus topics learned from the P3 Inspiring Science Textbook and Activity Book.",
         "The supplied plan does not give question counts or paper sections."
@@ -1254,7 +1254,7 @@ values ('STUDENT_USER_UUID'::uuid, 'Caleb', $content${
       "weight": 60,
       "marks": 100,
       "title": "End Year Exam",
-      "dates": "3 November 2026 (Tuesday)",
+      "dates": "28 October 2026 (Wednesday)",
       "weeks": "",
       "scope": [
         "Ch 1: Numbers to 100 000",
@@ -1318,7 +1318,7 @@ values ('STUDENT_USER_UUID'::uuid, 'Caleb', $content${
       "weight": 60,
       "marks": 100,
       "title": "End Year Examination",
-      "dates": "2 November 2026 (Monday)",
+      "dates": "29 October 2026 (Thursday)",
       "weeks": "",
       "scope": [
         "Ch 1: Plant System",

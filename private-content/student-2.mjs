@@ -25,19 +25,19 @@ export const student2Content={
  cards:[...cards.filter(c=>c.subject==='maths'||['s1','s2','s3','s4','s5','s7','s8','s9','s10'].includes(c.id)).map(c=>({...c,id:'s2-'+c.id,topic:c.id==='s2'?'Shadows':c.id==='s7'?'Plant System':c.topic})),...extraCards,...extraFlashcards.map(c=>({...c,id:'s2-'+c.id,topic:c.topic==='Plant parts'?'Plant System':c.topic}))],
  resources:revisionResources.map(r=>({...r,topics:r.id==='light'?'Ch 4: Light · Ch 5: Shadows':r.id==='heat'?'Ch 6: Heat · Ch 7: Effects of Heat':r.id==='matter'?'Ch 3: Matter':r.topics})),
  exams:{
-  maths:{marks:100,lines:['End Year Exam: Tuesday, 3 November 2026.','Assessment weighting: 60% of the year.','All 14 chapters are included. The supplied plan does not give question counts or paper sections.']},
-  science:{marks:100,lines:['End Year Examination: Monday, 2 November 2026.','Assessment weighting: 60% of the year.','Chapters 1–7, plus topics learned from the P3 Inspiring Science Textbook and Activity Book.','The supplied plan does not give question counts or paper sections.']}
+  maths:{marks:100,lines:['End Year Exam: Wednesday, 28 October 2026.','Assessment weighting: 60% of the year.','All 14 chapters are included. The supplied plan does not give question counts or paper sections.']},
+  science:{marks:100,lines:['End Year Examination: Thursday, 29 October 2026.','Assessment weighting: 60% of the year.','Chapters 1–7, plus topics learned from the P3 Inspiring Science Textbook and Activity Book.','The supplied plan does not give question counts or paper sections.']}
  },
  contentNotice:'P3 Inspiring Science revision: living things and classification, materials, plant and animal life cycles, and magnets. The school’s 2026 booklist confirms Inspiring Science P3; these revision groups follow MOE’s 2023 P3 syllabus. They are not a separately verified school P3 assessment plan. Human Systems subtopics are not specified in the supplied school plan.',
  assessments:[
   assessment('maths',1,10,50,'Weighted Assessment 1','23 February – 6 March 2026','Weeks 8–9',[1,2,3,4]),
   assessment('maths',2,15,50,'Weighted Assessment 2','11–22 May 2026','Weeks 8–9',[5,6,7,8]),
   assessment('maths',3,15,50,'Weighted Assessment 3','6–24 July 2026','Weeks 8–9 (as printed)',[9,10,11],{note:'The school sheet pairs Weeks 8–9 with 6–24 July. Confirm the timing with your tutor; both are transcribed as printed.'}),
-  assessment('maths',4,60,100,'End Year Exam','3 November 2026 (Tuesday)','',[1,2,3,4,5,6,7,8,9,10,11,12,13,14]),
+  assessment('maths',4,60,100,'End Year Exam','28 October 2026 (Wednesday)','',[1,2,3,4,5,6,7,8,9,10,11,12,13,14]),
   assessment('science',1,10,15,'Weighted Assessment 1','23 February – 6 March 2026','Weeks 8–9',[3]),
   assessment('science',2,15,15,'Weighted Assessment 2','11–22 May 2026','Weeks 8–9',[1,2]),
   assessment('science',3,15,15,'Weighted Assessment 3','6–24 July 2026','Weeks 2–4',[4,5],{note:'Performance task with rubrics.'}),
-  assessment('science',4,60,100,'End Year Examination','2 November 2026 (Monday)','',[1,2,3,4,5,6,7],{note:'Also includes topics learned from the P3 Inspiring Science Textbook and Activity Book; P3 revision groups follow the MOE syllabus: living things and classification, materials, plant and animal life cycles, and magnets.'})
+  assessment('science',4,60,100,'End Year Examination','29 October 2026 (Thursday)','',[1,2,3,4,5,6,7],{note:'Also includes topics learned from the P3 Inspiring Science Textbook and Activity Book; P3 revision groups follow the MOE syllabus: living things and classification, materials, plant and animal life cycles, and magnets.'})
  ],
  focusPrompt:'Pick a chapter you are still learning: try a Maths problem or explain a Science observation. Include Area and Perimeter, Nets, Symmetry and Effects of Heat in your Term 4 revision, then revisit earlier chapters for the end-year exams. For P3 Science, compare materials, classify living things, explain a plant or animal life cycle, or reason about magnetic poles.'
 };

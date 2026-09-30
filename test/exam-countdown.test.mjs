@@ -7,9 +7,10 @@ const lauren=JSON.parse((await readFile('supabase/student-1.sql','utf8')).split(
 test('each student countdown uses their assigned exam dates',()=>{
  const now=new Date('2026-09-30T04:00:00Z');
  assert.deepEqual(examCountdowns(lauren,now).map(e=>e.days),[27,29]);
- assert.deepEqual(examCountdowns(student2Content,now).map(e=>e.days),[34,33]);
+ assert.deepEqual(examCountdowns(student2Content,now).map(e=>e.days),[28,29]);
  assert.match(examCountdownView(lauren,now),/27 October 2026/);
- assert.doesNotMatch(examCountdownView(student2Content,now),/October/);
+ assert.match(examCountdownView(student2Content,now),/28 October 2026/);
+ assert.doesNotMatch(examCountdownView(student2Content,now),/November/);
 });
 test('countdown rolls over at Singapore midnight and handles today and finished papers',()=>{
  assert.equal(examCountdowns(lauren,new Date('2026-10-26T15:59:59Z'))[0].text,'1 day to go');

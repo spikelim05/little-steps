@@ -38,7 +38,7 @@ test('Student 2 supplied plan has its own topics, exams, assessments and resourc
  for(const subject of ['maths','science'])assert.equal(student2Content.assessments.filter(a=>a.subject===subject).reduce((n,a)=>n+a.weight,0),100);
  const {context,get}=fixture();vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'two'},display_name:'Caleb',content:student2Content})})`,context);
  for(const p of ['home','revision','flashcards','focus','syllabus']){vm.runInContext(`page='${p}';render()`,context);assert.match(get('#app').innerHTML,/Caleb/);assert.doesNotMatch(get('#app').innerHTML,/Lauren|Your next chapter is on its way/);}
- const html=get('#app').innerHTML;assert.match(html,/2 November 2026/);assert.match(html,/3 November 2026/);assert.match(html,/Fractions \(II\)/);assert.match(html,/Effects of Heat/);assert.match(html,/Performance task with rubrics/);assert.match(html,/P3 Inspiring Science/);assert.match(html,/Life Cycles of Plants/);assert.match(html,/MOE/);assert.doesNotMatch(html,/protractor|15 short-answer/);
+ const html=get('#app').innerHTML;assert.match(html,/29 October 2026/);assert.match(html,/28 October 2026/);assert.match(html,/Fractions \(II\)/);assert.match(html,/Effects of Heat/);assert.match(html,/Performance task with rubrics/);assert.match(html,/P3 Inspiring Science/);assert.match(html,/Life Cycles of Plants/);assert.match(html,/MOE/);assert.doesNotMatch(html,/protractor|15 short-answer/);
 });
 test('search and saved filters, flashcard reveal and focus completion behave correctly',()=>{
  const {context,get}=fixture();
