@@ -1,3 +1,4 @@
+import {examCountdownView} from './public/exam-countdown.js';
 import {tutorInboxView} from './public/tutoring.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -17,7 +18,7 @@ function fixture(){
  const get=s=>{if(!nodes.has(s))nodes.set(s,element());return nodes.get(s);};
  const document={documentElement:{dataset:{}},querySelector:get,querySelectorAll:()=>[],addEventListener(){},activeElement:element()};
  let stored=null;const storage={getItem:()=>stored,setItem:(_,v)=>stored=v};
- const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},tutorInboxView,filesView,dailyCards,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
+ const context=vm.createContext({document,window:{localStorage:storage,addEventListener(){},scrollTo(){},print(){}},location:{hash:''},examCountdownView,tutorInboxView,filesView,dailyCards,challengeView,awardMessage,themes,readContent,scopedStorage,...progressHelpers,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,crypto,console});
  vm.runInContext(code,context);vm.runInContext(`enterWorkspace(${JSON.stringify({user:{id:'one'},display_name:'Lauren',content:seed})})`,context);return {context,nodes,get};
 }
 test('assigned study pages render in all available themes with uploads only in My files',()=>{
